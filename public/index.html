@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đường Thọ GhostDevice Pro - Trung Tâm Quản Lý Key Bản Quyền</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background: #090d16; color: #e2e8f0; min-height: 100vh; padding: 24px 14px; display: flex; flex-direction: column; align-items: center; }
+    .wrap { width: 100%; max-width: 880px; display: flex; flex-direction: column; gap: 18px; }
+    .header { background: linear-gradient(135deg, #0f172a 0%, #064e3b 100%); border: 1px solid #10b981; border-radius: 12px; padding: 22px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .header h1 { font-size: 21px; color: #34d399; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .header p { color: #cbd5e1; font-size: 13px; margin-top: 5px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .stat-card { background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 12px; text-align: center; }
+    .stat-num { font-size: 22px; font-weight: 800; color: #38bdf8; }
+    .stat-lbl { font-size: 11.5px; color: #94a3b8; margin-top: 2px; }
+    .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .card-title { font-size: 14px; font-weight: 800; color: #34d399; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    label { font-size: 12.5px; font-weight: 700; color: #cbd5e1; }
+    input[type="text"], input[type="password"], input[type="date"], select { background: #0f172a; border: 1px solid #334155; color: #f8fafc; padding: 10px 12px; border-radius: 7px; font-size: 13.5px; outline: none; transition: 0.2s; }
+    input:focus, select:focus { border-color: #10b981; }
+    .btn { background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; border: none; padding: 11px 16px; border-radius: 7px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+    .btn:hover { filter: brightness(1.12); }
+    .btn-blue { background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%); }
+    .btn-danger { background: #ef4444; }
+    .btn-gray { background: #334155; }
+    .dur-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+    .dur-btn { background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer; text-align: center; }
+    .dur-btn.active { background: rgba(16, 185, 129, 0.22); border-color: #10b981; color: #34d399; }
+    .result-box { display: none; background: #0f172a; border: 1px solid #10b981; border-radius: 8px; padding: 14px; margin-top: 12px; }
+    .key-text { font-family: Consolas, monospace; font-size: 14px; font-weight: bold; color: #facc15; padding: 10px; background: #020617; border-radius: 5px; margin-bottom: 10px; word-break: break-all; text-align: center; border: 1px dashed #334155; }
+    .table-box { max-height: 400px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; padding: 9px 10px; background: #1e293b; color: #94a3b8; border-bottom: 1px solid #334155; position: sticky; top: 0; }
+    td { padding: 9px 10px; border-bottom: 1px solid #1e293b; color: #cbd5e1; vertical-align: middle; }
+    .tag-live { background: #065f46; color: #6ee7b7; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+    .tag-lock { background: #7f1d1d; color: #fca5a5; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+    .act-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <h1>🛡️ ĐƯỜNG THỌ GHOSTDEVICE PRO - LICENSE SERVER</h1>
+    <p>Hệ thống quản lý & cấp Key kích hoạt theo mã phần cứng (1 Key = 1 Máy)</p>
+    <p style="font-size: 12px; color: #6ee7b7; margin-top: 5px;">📞 Zalo hỗ trợ: <b>0934415387</b> (Đường Thọ)</p>
+  </div>
+
+  <!-- LOGIN CARD -->
+  <div class="card" id="card-login">
+    <div class="card-title">🔐 ĐĂNG NHẬP QUẢN TRỊ VIÊN</div>
+    <div class="form-row">
+      <label>Mật khẩu Admin:</label>
+      <input type="password" id="in-pwd" placeholder="Nhập mật khẩu quản trị..." />
+    </div>
+    <button type="button" class="btn" id="btn-login">🔑 Đăng nhập Dashboard</button>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="admin-panel" style="display: none; flex-direction: column; gap: 18px;">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="st-total">0</div>
+        <div class="stat-lbl">Tổng thiết bị đã cấp</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="st-active" style="color:#34d399;">0</div>
+        <div class="stat-lbl">Đang hoạt động</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="st-locked" style="color:#f87171;">0</div>
+        <div class="stat-lbl">Đang khóa</div>
+      </div>
+    </div>
+
+    <!-- 1. CREATE KEY -->
+    <div class="card">
+      <div class="card-title">⚡ CẤP KEY KÍCH HOẠT MỚI THEO MÃ MÁY</div>
+      <div class="form-row">
+        <label>1. Mã máy của khách (GD-XXXX-XXXX-XXXX):</label>
+        <input type="text" id="in-mach" placeholder="Ví dụ: GD-8A9F-7C2B-4E10" style="font-family: Consolas, monospace; font-weight: bold; color: #34d399;" />
+      </div>
+      <div class="form-row">
+        <label>2. Tên khách / Ghi chú Zalo:</label>
+        <input type="text" id="in-client" placeholder="Ví dụ: Anh Nam Zalo 0988xxx..." />
+      </div>
+      <div class="form-row">
+        <label>3. Chọn thời hạn sử dụng:</label>
+        <div class="dur-grid">
+          <button type="button" class="dur-btn active" data-exp="LIFETIME">🌟 Vĩnh viễn</button>
+          <button type="button" class="dur-btn" data-exp="365">⏱️ 1 Năm</button>
+          <button type="button" class="dur-btn" data-exp="180">⏱️ 6 Tháng</button>
+          <button type="button" class="dur-btn" data-exp="90">⏱️ 3 Tháng</button>
+          <button type="button" class="dur-btn" data-exp="30">⏱️ 1 Tháng</button>
+          <button type="button" class="dur-btn" data-exp="CUSTOM">📅 Chọn ngày</button>
+        </div>
+        <div id="custom-date-row" style="display: none; margin-top: 4px;">
+          <input type="date" id="in-date" />
+        </div>
+      </div>
+      <button type="button" class="btn" id="btn-gen-key" style="width:100%;">⚡ TẠO VÀ LƯU KEY LÊN CLOUD SERVER</button>
+
+      <div class="result-box" id="res-box">
+        <div style="font-size: 12.5px; font-weight: bold; color: #34d399; margin-bottom: 6px;">✅ ĐÃ TẠO KEY BẢN QUYỀN THÀNH CÔNG:</div>
+        <div class="key-text" id="res-key"></div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn" id="btn-cp-key" style="flex:1;">📋 Copy Key</button>
+          <button type="button" class="btn btn-blue" id="btn-cp-msg" style="flex:1;">💬 Copy Tin Nhắn Gửi Khách</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. DEVICE LIST -->
+    <div class="card">
+      <div class="card-title" style="justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <span>📋 DANH SÁCH MÁY & KEY TRÊN SERVER</span>
+        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+          <button type="button" class="btn" id="btn-backup" style="padding: 5px 10px; font-size: 11px;">📥 Backup JSON</button>
+          <button type="button" class="btn btn-blue" id="btn-restore" style="padding: 5px 10px; font-size: 11px;">📤 Khôi phục JSON</button>
+          <input type="file" id="file-restore" accept=".json" style="display: none;" />
+          <button type="button" class="btn btn-gray" id="btn-refresh" style="padding: 5px 10px; font-size: 11px;">🔄 Làm mới</button>
+        </div>
+      </div>
+
+      <div class="form-row" style="margin-bottom: 10px;">
+        <input type="text" id="in-search" placeholder="🔍 Tìm theo tên khách, mã máy hoặc mã key..." />
+      </div>
+
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>Khách / Mã Máy</th>
+              <th>Key Kích Hoạt</th>
+              <th>Thời Hạn</th>
+              <th>Trạng Thái</th>
+              <th>Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="tb-keys">
+            <tr><td colspan="5" style="text-align: center; padding: 16px; color: #64748b;">Đang tải dữ liệu...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let adminPassword = localStorage.getItem("gd_admin_pwd") || "";
+  let selectedDur = "LIFETIME";
+  let latestDataObj = { keys: {}, blacklist: {} };
+  let currentKeyResult = null;
+
+  const inPwd = document.getElementById("in-pwd");
+  const btnLogin = document.getElementById("btn-login");
+  const cardLogin = document.getElementById("card-login");
+  const adminPanel = document.getElementById("admin-panel");
+  const inMach = document.getElementById("in-mach");
+  const inClient = document.getElementById("in-client");
+  const durBtns = document.querySelectorAll(".dur-btn");
+  const customDateRow = document.getElementById("custom-date-row");
+  const inDate = document.getElementById("in-date");
+  const btnGenKey = document.getElementById("btn-gen-key");
+  const resBox = document.getElementById("res-box");
+  const resKey = document.getElementById("res-key");
+  const btnCpKey = document.getElementById("btn-cp-key");
+  const btnCpMsg = document.getElementById("btn-cp-msg");
+  const btnRefresh = document.getElementById("btn-refresh");
+  const inSearch = document.getElementById("in-search");
+  const tbKeys = document.getElementById("tb-keys");
+
+  if (adminPassword) {
+    inPwd.value = adminPassword;
+    loadData(true);
+  }
+
+  durBtns.forEach(b => {
+    b.addEventListener("click", () => {
+      durBtns.forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      selectedDur = b.dataset.exp;
+      customDateRow.style.display = (selectedDur === "CUSTOM") ? "block" : "none";
+      if (selectedDur === "CUSTOM") {
+        const d = new Date(); d.setDate(d.getDate() + 30);
+        inDate.value = d.toISOString().split("T")[0];
+      }
+    });
+  });
+
+  function getExpiryCode() {
+    if (selectedDur === "LIFETIME") return "LIFETIME";
+    if (selectedDur === "CUSTOM") {
+      const v = inDate.value;
+      if (!v) return "LIFETIME";
+      const p = v.split("-");
+      return `${p[0]}${p[1]}${p[2]}`;
+    }
+    const days = parseInt(selectedDur, 10);
+    const d = new Date(); d.setDate(d.getDate() + days);
+    const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, "0"), day = String(d.getDate()).padStart(2, "0");
+    return `${y}${m}${day}`;
+  }
+
+  function escapeHtml(s) {
+    return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  btnLogin.addEventListener("click", () => {
+    adminPassword = inPwd.value.trim();
+    localStorage.setItem("gd_admin_pwd", adminPassword);
+    loadData(false);
+  });
+
+  inPwd.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") btnLogin.click();
+  });
+
+  async function loadData(silent) {
+    try {
+      const res = await fetch("/api/admin", {
+        headers: { "X-Admin-Password": adminPassword }
+      });
+      const json = await res.json();
+      if (!json.success) {
+        if (!silent) alert("Lỗi: " + json.error);
+        return;
+      }
+      cardLogin.style.display = "none";
+      adminPanel.style.display = "flex";
+      latestDataObj = json.data || { keys: {}, blacklist: {} };
+      renderTable();
+    } catch (e) {
+      if (!silent) alert("Không kết nối được tới API: " + e.message);
+    }
+  }
+
+  function renderTable() {
+    tbKeys.innerHTML = "";
+    const keys = latestDataObj.keys || {};
+    const blacklist = latestDataObj.blacklist || {};
+    const q = (inSearch.value || "").trim().toLowerCase();
+
+    const allEntries = Object.entries(keys);
+    let lockedCount = 0;
+    allEntries.forEach(([midClean, item]) => {
+      if (blacklist[midClean] || blacklist[item.key]) lockedCount++;
+    });
+    document.getElementById("st-total").textContent = allEntries.length;
+    document.getElementById("st-active").textContent = Math.max(0, allEntries.length - lockedCount);
+    document.getElementById("st-locked").textContent = lockedCount;
+
+    const entries = allEntries.filter(([midClean, item]) => {
+      if (!q) return true;
+      return (
+        String(item.clientName || "").toLowerCase().includes(q) ||
+        String(item.machineId || "").toLowerCase().includes(q) ||
+        String(item.key || "").toLowerCase().includes(q)
+      );
+    });
+
+    if (entries.length === 0) {
+      tbKeys.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:16px; color:#64748b;">Chưa có thiết bị nào phù hợp.</td></tr>`;
+      return;
+    }
+
+    entries.reverse().forEach(([midClean, item]) => {
+      const isLocked = Boolean(blacklist[midClean] || blacklist[item.key]);
+      const expDisp = item.expiry === "LIFETIME" ? "🌟 Vĩnh viễn" : (item.expiryLabel || item.expiry);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <b style="color:#34d399;">${escapeHtml(item.clientName || "Khách hàng")}</b><br/>
+          <span style="font-family:Consolas,monospace; color:#94a3b8; font-size:11px;">${escapeHtml(item.machineId)}</span>
+        </td>
+        <td style="font-family:Consolas,monospace; color:#facc15; font-size:11px; word-break:break-all;">${escapeHtml(item.key)}</td>
+        <td>${escapeHtml(expDisp)}</td>
+        <td>${isLocked ? '<span class="tag-lock">🔒 Đã khóa</span>' : '<span class="tag-live">✅ Hoạt động</span>'}</td>
+        <td>
+          <div class="act-btns">
+            ${isLocked
+              ? `<button class="btn" style="padding:4px 8px; font-size:10.5px;" data-act="unrevoke" data-id="${escapeHtml(midClean)}">🔓 Mở</button>`
+              : `<button class="btn btn-danger" style="padding:4px 8px; font-size:10.5px;" data-act="revoke" data-id="${escapeHtml(midClean)}">🔒 Khóa</button>`
+            }
+            <button class="btn btn-gray" style="padding:4px 8px; font-size:10.5px;" data-act="copy" data-key="${escapeHtml(item.key)}" title="Copy Key">📋</button>
+            <button class="btn btn-danger" style="padding:4px 8px; font-size:10.5px; background:#7f1d1d;" data-act="delete" data-id="${escapeHtml(midClean)}" title="Xóa khỏi danh sách">🗑️</button>
+          </div>
+        </td>
+      `;
+      tbKeys.appendChild(tr);
+    });
+
+    tbKeys.querySelectorAll("button[data-act]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const act = btn.dataset.act;
+        const target = btn.dataset.id;
+        if (act === "copy") {
+          navigator.clipboard.writeText(btn.dataset.key).then(() => alert("Đã sao chép Key:\n" + btn.dataset.key));
+          return;
+        }
+        if (act === "revoke" && !confirm(`Khóa thiết bị ${target}? Máy này sẽ lập tức bị khóa tiện ích.`)) return;
+        if (act === "delete" && !confirm(`Xóa vĩnh viễn thiết bị ${target} khỏi danh sách?`)) return;
+
+        await fetch("/api/admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Admin-Password": adminPassword },
+          body: JSON.stringify({ action: act, target })
+        });
+        loadData(true);
+      });
+    });
+  }
+
+  inSearch.addEventListener("input", renderTable);
+
+  btnGenKey.addEventListener("click", async () => {
+    const mach = inMach.value.trim().toUpperCase();
+    if (!mach) { alert("Vui lòng nhập Mã máy của khách!"); inMach.focus(); return; }
+
+    btnGenKey.innerText = "⏳ Đang tạo Key...";
+    btnGenKey.disabled = true;
+
+    try {
+      const exp = getExpiryCode();
+      const res = await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Admin-Password": adminPassword },
+        body: JSON.stringify({
+          action: "generate",
+          machineId: mach,
+          clientName: inClient.value.trim() || "Khách hàng",
+          expiry: exp
+        })
+      });
+      const json = await res.json();
+      btnGenKey.innerText = "⚡ TẠO VÀ LƯU KEY LÊN CLOUD SERVER";
+      btnGenKey.disabled = false;
+
+      if (json.success) {
+        currentKeyResult = json;
+        resKey.textContent = json.key;
+        resBox.style.display = "block";
+        loadData(true);
+      } else {
+        alert("Lỗi: " + json.error);
+      }
+    } catch (e) {
+      btnGenKey.innerText = "⚡ TẠO VÀ LƯU KEY LÊN CLOUD SERVER";
+      btnGenKey.disabled = false;
+      alert("Lỗi kết nối: " + e.message);
+    }
+  });
+
+  btnCpKey.addEventListener("click", () => {
+    if (currentKeyResult) {
+      navigator.clipboard.writeText(currentKeyResult.key).then(() => alert("Đã sao chép Key: " + currentKeyResult.key));
+    }
+  });
+
+  btnCpMsg.addEventListener("click", () => {
+    if (!currentKeyResult) return;
+    const expStr = currentKeyResult.expiry === "LIFETIME" ? "Vĩnh viễn" : (currentKeyResult.expiryLabel || currentKeyResult.expiry);
+    const msg =
+      `🎉 GỬI BẠN MÃ KÍCH HOẠT GHOSTDEVICE PRO\n` +
+      `• Mã máy: ${currentKeyResult.machineId}\n` +
+      `• Thời hạn: ${expStr}\n` +
+      `• Mã Key: ${currentKeyResult.key}\n\n` +
+      `👉 Hướng dẫn: Mở tiện ích GhostDevice Pro -> Dán mã Key vào ô kích hoạt -> Bấm "🚀 Kích hoạt" là mở khóa toàn bộ tính năng!`;
+    navigator.clipboard.writeText(msg).then(() => alert("Đã sao chép tin nhắn gửi khách!"));
+  });
+
+  btnRefresh.addEventListener("click", () => loadData(false));
+
+  document.getElementById("btn-backup").addEventListener("click", () => {
+    if (!latestDataObj) return;
+    const blob = new Blob([JSON.stringify(latestDataObj, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ghostdevice_keys_backup_${new Date().toISOString().split("T")[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  const fileRestore = document.getElementById("file-restore");
+  document.getElementById("btn-restore").addEventListener("click", () => fileRestore.click());
+  fileRestore.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        if (!confirm("Khôi phục và gộp danh sách Key từ file này lên Cloud Server?")) return;
+        const res = await fetch("/api/admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Admin-Password": adminPassword },
+          body: JSON.stringify({ action: "restore", backupData: parsed })
+        });
+        const j = await res.json();
+        if (j.success) {
+          alert("✅ Khôi phục dữ liệu thành công!");
+          loadData(true);
+        } else {
+          alert("Lỗi: " + j.error);
+        }
+      } catch (err) {
+        alert("File JSON không hợp lệ: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    fileRestore.value = "";
+  });
+</script>
+</body>
+</html>
