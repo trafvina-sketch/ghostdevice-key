@@ -3,7 +3,7 @@
 // ============================================================================
 const {
   generateKeyForMachine,
-  ADMIN_PASSWORD,
+  verifyAdminPassword,
   getCleanMachineId,
   formatMachineId,
   formatExpiryLabel
@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
 
     const password =
       body.password || req.headers["x-admin-password"] || req.query.password;
-    if (password !== ADMIN_PASSWORD) {
+    if (!verifyAdminPassword(password)) {
       return res
         .status(401)
         .json({ success: false, error: "Mật khẩu Quản trị viên không chính xác!" });
